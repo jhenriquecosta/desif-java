@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- 
+    
+    Mapping file coded by Igor Vieira - igvieira at pbh.gov.br
+
+-->
+<hibernate-mapping>
+  <class name="br.gov.pbh.desif.model.pojo.VersaoDocumentacao" schema="PUBLIC" table="VERSAO_DOCUMENTO">
+    <id name="numVersaoDocumentacao" type="string">
+      <column name="IDN_VRS_DOC"/>
+      <generator class="assigned"/>
+    </id>
+    <property name="dataInicioVersao" type="date">
+      <column length="0" name="DAT_INIC_VRS" not-null="true"/>
+    </property>
+    <property name="dataFimVersao" type="date">
+      <column length="0" name="DAT_FIM_VRS" not-null="false"/>
+    </property>
+  </class>
+</hibernate-mapping>

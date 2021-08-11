@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- 
+    Mapping file coded by Igor Vieira
+-->
+<hibernate-mapping>
+  <class name="br.gov.pbh.desif.model.pojo.BalanceteAnaliticoMensal" schema="PUBLIC" table="BALANCETES_ANALITICOS">
+    <id name="id" type="long">
+      <column name="IDN_BLCT_ANLT"/>
+      <generator class="assigned"/>
+    </id>
+    <property name="codigoDependencia" type="string">
+      <column name="COD_DEPE" not-null="true"/>
+    </property>
+    <property name="linhaBalanceteAnaliticoMensal" type="long">
+      <column name="NUM_LINH_BLCT_ANLT" not-null="true"/>
+    </property>
+    <property name="anoMesCompetencia" type="date">
+      <column length="0" name="DAT_COMP" not-null="true"/>
+    </property>
+    <property name="conta" type="string">
+      <column name="COD_PGCC" not-null="true"/>
+    </property>
+    <property name="saldoInicial" type="double">
+      <column name="VAL_SALD_INIC" not-null="true" precision="16"/>
+    </property>
+    <property name="valorDebito" type="double">
+      <column name="VAL_DEBT" not-null="true" precision="16"/>
+    </property>
+    <property name="valorCredito" type="double">
+      <column name="VAL_CRED" not-null="true" precision="16"/>
+    </property>
+    <property name="saldoFinal" type="double">
+      <column name="VAL_SALD_FIM" not-null="true" precision="16"/>
+    </property>
+  </class>
+</hibernate-mapping>

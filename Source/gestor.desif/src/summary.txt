@@ -1,0 +1,16 @@
+Summary for DESIF.jar
+Decompiled with CFR 0_125
+
+
+br.gov.pbh.desif.service.certificacao.ServicoVerificarAssinatura
+----------------------------
+
+run()
+  Unable to fully structure code
+
+
+br.gov.pbh.desif.service.ws.DadosWs
+----------------------------
+
+run()
+  Unable to fully structure code
