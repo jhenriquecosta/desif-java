@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- 
+    Mapping file coded by Igor Vieira
+-->
+<!--
+    ##############################################
+    IMPORTANTE
+
+    ==> Verificar quais os tipos exatos para os campos
+    ##############################################
+-->
+<hibernate-mapping>
+  <class name="br.gov.pbh.desif.model.pojo.DemonstrativoRateioMensal" schema="PUBLIC" table="DEMONTRATIVOS_RATEIOS">
+    <id name="id" type="long">
+      <column name="IDN_DEMO_RATE"/>
+      <generator class="assigned"/>
+    </id>
+    <property name="codigoDependencia" type="string">
+      <column name="COD_DEPE" not-null="true"/>
+    </property>
+    <property name="anoMesCompetencia" type="date">
+      <column length="0" name="DAT_COMP" not-null="true"/>
+    </property>
+    <property name="descricaoDetalhadaReceita" type="string">
+      <column name="DES_RATE" not-null="true"/>
+    </property>
+    <property name="numLinha" type="long">
+      <column name="NUM_LINH_DEMO_RATE" not-null="true"/>
+    </property>
+    <property name="valorReceitaRateada" type="double">
+      <column name="VAL_RATE" precision="16"/>
+    </property>
+    <property name="tipoPartida" type="short">
+      <column name="OPC_TIPO_PRDA" not-null="true"/>
+    </property>
+    <property name="codigoEvento" type="integer">
+      <column name="IDN_EVNT_CNTB" not-null="true"/>
+    </property>
+  </class>
+</hibernate-mapping>

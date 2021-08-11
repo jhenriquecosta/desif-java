@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans default-lazy-init="true" 
+xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd"
+xmlns:tx="http://www.springframework.org/schema/tx">
+
+    <!-- Beans da camada database   isso deu pau default-autowire="true" -->
+
+    <!-- Carrega o arquivo contexto.properties -->
+    <bean id="propertyConfigurer" class="br.gov.pbh.desif.service.contexto.PropertyPlaceholderConfigurerDESIF">
+        <property name="location" value="config.properties" />   <!-- config.properties é o nome do arquivo -->
+    </bean>
+
+    <!-- DataSource -->
+    <bean name="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName">
+            <value>org.hsqldb.jdbcDriver</value>
+        </property>
+        <!-- Mudar este parâmetro  -->
+        <property name="url">
+          <value>${caminhoBanco}</value>
+<!--          <value>jdbc:hsqldb:file:C:\ProjetoDesif\apuracao_mensal_issqn\database\br\gov\pbh\desif\arquivosbanco\des_if</value>-->
+        </property>
+        <!-- Mudar  este parâmetro -->
+        <property name="username">
+            <value>sa</value>
+        </property>
+        <!-- Mudar este parâmetro -->
+        <property name="password">
+            <value></value>
+        </property>
+    </bean>
+
+    <!-- Configuração dos DAOs Hibernate  -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource"><ref bean="dataSource"/></property>
+        <property name="mappingResources">
+            <list>
+                <value>br/gov/pbh/desif/dao/xml/TipoDependencia.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/Titulo.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/Erro.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/Alerta.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/IdentificacaoDeclaracao.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/IdentificacaoDependencia.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/ApuracaoReceita.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/IssqnMensal.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/Cidade.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/SistemaErro.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/SistemaAlerta.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/OrigemCreditoCompensar.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/CodigoTributacaoMunicipal.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/CodigoTributacaoDesif.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/ListaServico.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/Solucao.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/ErroSolucao.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/IndicesMonetarios.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/Feriados.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/PlanoGeralContaComentado.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/TarifaServico.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/IdentServicosRemunVariavel.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/Cosif.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/ServRemunVar.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/NewIdentificacaoDeclaracao.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/PgccsPaiFilho.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/CosifPaiFilho.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/TaxasGuias.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/BalanceteAnaliticoMensal.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/DemonstrativoRateioMensal.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/EventosContabeis.hbm.xml</value>
+                <value>br/gov/pbh/desif/dao/xml/VersaoDocumentacao.hbm.xml</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+            <!--    <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.show_sql">true</prop>-->
+            </props>
+        </property>
+    </bean>
+
+    <bean name="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="dataSource"><ref bean="dataSource"/></property>
+        <property name="sessionFactory"><ref bean="sessionFactory"/></property>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="false" />
+    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+  <bean name="controle" class="br.gov.pbh.desif.control.Controle" scope="singleton" >
+    <property name="validaICM" ref="validaICM"></property>
+    <property name="validaAMI" ref="validaAMI"></property>
+    <property name="validaModContab" ref="validaModContab"></property>
+  </bean>
+
+    <!-- Validação banco Módulo Contábil -->
+    <bean name="validaModContab" class="br.gov.pbh.desif.service.registrobanco.impl.ValidaBancoModuloContabilImpl" scope="singleton">
+        <property name="VBReg0000" ref="VBReg0000"></property>
+        <property name="VBReg0400" ref="VBReg0400"></property>
+        <property name="VBReg0410" ref="VBReg0410"></property>
+        <property name="VBReg0420" ref="VBReg0420"></property>
+    </bean>
+
+    <!-- Validação banco Informações comuns aos municipios-->
+    <bean name="validaICM" class="br.gov.pbh.desif.service.registrobanco.impl.ValidaBancoInformacoesComunsMunicipiosImpl" scope="singleton" >
+        <property name="VBReg0000" ref="VBReg0000"></property>
+        <property name="VBReg0100" ref="VBReg0100"></property>
+        <property name="VBReg0200" ref="VBReg0200"></property>
+        <property name="VBReg0300" ref="VBReg0300"></property>
+        <property name="pgccDao" ref="pgccDao"></property>
+        <property name="pgccsPFIdDao" ref="pgccsPFIdDao"></property>
+    </bean>
+
+    <!-- Validação banco Apuração Mensal do Issqn -->
+    <bean name="validaAMI" class="br.gov.pbh.desif.service.registrobanco.impl.ValidaBancoApuracaoMensalIssqnImpl" scope="singleton">
+        <property name="VBReg0000" ref="VBReg0000"></property>
+        <property name="VBReg0400" ref="VBReg0400"></property>
+        <property name="VBReg0430" ref="VBReg0430"></property>
+        <property name="VBReg0440" ref="VBReg0440"></property>
+        <property name="declaracaoDao" ref="declaracaoDao"></property>
+        <property name="apuracaoMensalIssqnDao" ref="apuracaoMensalIssqnDao"></property>
+        <property name="dependenciaDao" ref="dependenciaDao"></property>
+    </bean>
+
+    <bean name="VBReg0000" class="br.gov.pbh.desif.service.registrobanco.impl.ValidaBancoReg0000Impl" scope="prototype">
+        <property name="declaracaoDao" ref="declaracaoDao"></property>
+        <property name="tituloDao" ref="tituloDao"></property>
+        <property name="cidadeDao" ref="cidadeDao"></property>
+        <property name="dependenciaDao" ref="dependenciaDao"></property>
+    </bean>
+
+    <bean name="VBReg0100" class="br.gov.pbh.desif.service.registrobanco.impl.ValidaBancoReg0100Impl" scope="prototype">
+        <property name="declaracaoDao" ref="declaracaoDao"></property>
+        <property name="pgccDao" ref="pgccDao"></property>
+        <property name="cosifDao" ref="cosifDao"></property>
+        <property name="cosifPFIdDao" ref="cosifPFIdDao"></property>
+        <property name="codTribDao" ref="codTribDao"></property>
+        <property name="codTribMunicDao" ref="codTribMunicDao"></property>
+        <property name="tarServDao" ref="tarServDao"></property>
+        <property name="identServRemVarDao" ref="identServRemVarDao"></property>
+        <property name="pgccsPFIdDao" ref="pgccsPFIdDao"></property>
+    </bean>
+
+    <bean name="VBReg0200" class="br.gov.pbh.desif.service.registrobanco.impl.ValidaBancoReg0200Impl" scope="prototype">
+        <property name="tituloDao" ref="tituloDao"></property>
+        <property name="pgccDao" ref="pgccDao"></property>
+        <property name="declaracaoDao" ref="declaracaoDao"></property>
+        <property name="tarServDao" ref="tarServDao"></property>
+        <property name="pgccsPFIdDao" ref="pgccsPFIdDao"></property>
+    </bean>
+
+    <bean name="VBReg0300" class="br.gov.pbh.desif.service.registrobanco.impl.ValidaBancoReg0300Impl" scope="prototype">
+        <property name="identServRemVarDao" ref="identServRemVarDao"></property>
+        <property name="servRemVarDao" ref="servRemVarDao"></property>
+        <property name="pgccDao" ref="pgccDao"></property>
+    </bean>
+
+    <bean name="VBReg0400" class="br.gov.pbh.desif.service.registrobanco.impl.ValidaBancoReg0400Impl" scope="prototype">
+        <property name="cidadeDao" ref="cidadeDao"></property>
+        <property name="tipoDependenciaDao" ref="tipoDependenciaDao"></property>
+        <property name="apuracaoMensalIssqnDao" ref="apuracaoMensalIssqnDao"></property>
+        <property name="dependenciaDao" ref="dependenciaDao"></property>
+        <property name="declaracaoDao" ref="declaracaoDao"></property>
+    </bean>
+
+    <bean name="VBReg0410" class="br.gov.pbh.desif.service.registrobanco.impl.ValidaBancoReg0410Impl" scope="prototype">
+        <property name="balancAnalitMensalDao" ref="balancAnalitMensalDao"></property>
+        <property name="dependenciaDao" ref="dependenciaDao"></property>
+        <property name="declaracaoDao" ref="declaracaoDao"></property>
+    </bean>
+
+    <bean name="VBReg0420" class="br.gov.pbh.desif.service.registrobanco.impl.ValidaBancoReg0420Impl" scope="prototype">
+        <property name="rateioMensalDao" ref="rateioMensalDao"></property>
+        <property name="dependenciaDao" ref="dependenciaDao"></property>
+        <property name="declaracaoDao" ref="declaracaoDao"></property>
+        <property name="eventosContabeisDao" ref="eventosContabeisDao"></property>
+    </bean>
+
+    <bean name="VBReg0430" class="br.gov.pbh.desif.service.registrobanco.impl.ValidaBancoReg0430Impl" scope="prototype">
+        <property name="apuracaoMensalIssqnDao" ref="apuracaoMensalIssqnDao"></property>
+        <property name="dependenciaDao" ref="dependenciaDao"></property>
+        <property name="codTribDao" ref="codTribDao"></property>
+        <property name="codTribMunicDao" ref="codTribMunicDao"></property>
+        <property name="declaracaoDao" ref="declaracaoDao"></property>
+        <property name="demMensalIssqnDao" ref="demMensalIssqnDao"></property>
+    </bean>
+    <bean name="VBReg0440" class="br.gov.pbh.desif.service.registrobanco.impl.ValidaBancoReg0440Impl" scope="prototype">
+        <property name="demMensalIssqnDao" ref="demMensalIssqnDao"></property>
+        <property name="apuracaoMensalIssqnDao" ref="apuracaoMensalIssqnDao"></property>
+        <property name="declaracaoDao" ref="declaracaoDao"></property>
+        <property name="codTribDao" ref="codTribDao"></property>
+        <property name="dependenciaDao" ref="dependenciaDao"></property>
+    </bean>
+
+
+    <bean name="tipoDependenciaDao" class="br.gov.pbh.desif.dao.impl.TipoDependenciaDaoImpl" scope="singleton" />
+    <bean name="tituloDao" class="br.gov.pbh.desif.dao.impl.TituloDaoImpl" scope="singleton" />
+    <bean name="erroDao" class="br.gov.pbh.desif.dao.impl.ErroDaoImpl" scope="singleton" />
+    <bean name="alertaDao" class="br.gov.pbh.desif.dao.impl.AlertaDaoImpl" scope="singleton" />
+    <bean name="declaracaoDao" class="br.gov.pbh.desif.dao.impl.IdentDeclaracaoDaoImpl" scope="singleton" />
+    <bean name="dependenciaDao" class="br.gov.pbh.desif.dao.impl.IdentDependenciaDaoImpl" scope="singleton" />
+    <bean name="apuracaoMensalIssqnDao" class="br.gov.pbh.desif.dao.impl.ApuracaoReceitaDaoImpl" scope="singleton" />
+    <bean name="demMensalIssqnDao" class="br.gov.pbh.desif.dao.impl.IssqnMensalDaoImpl" scope="singleton" />
+    <bean name="cidadeDao" class="br.gov.pbh.desif.dao.impl.CidadeDaoImpl" scope="singleton" />
+    <bean name="sistemaErroDao" class="br.gov.pbh.desif.dao.impl.SistemaErroDaoImpl" scope="singleton" />
+    <bean name="sistemaAlertaDao" class="br.gov.pbh.desif.dao.impl.SistemaAlertaDaoImpl" scope="singleton" />
+    <bean name="desCredCompDao" class="br.gov.pbh.desif.dao.impl.OrigemCredCompensarDaoImpl" scope="singleton" />
+    <bean name="codTribMunicDao" class="br.gov.pbh.desif.dao.impl.CodTribuMunicipalDaoImpl" scope="singleton" />
+    <bean name="codTribDao" class="br.gov.pbh.desif.dao.impl.CodTributacaoDesifDaoImpl" scope="singleton" />
+    <bean name="ListaServDao" class="br.gov.pbh.desif.dao.impl.ListaServicoDaoImpl" scope="singleton" />
+    <bean name="relatorioDao" class="br.gov.pbh.desif.dao.impl.RelatorioDaoImpl" scope="singleton" />
+    <bean name="relatorioContabilDao" class="br.gov.pbh.desif.dao.impl.RelatorioContabilDaoImpl" scope="singleton" />
+    <bean name="relatorioICMDao" class="br.gov.pbh.desif.dao.impl.RelatorioInfoComunsDaoImpl" scope="singleton" />
+    <bean name="indiceMonetarioDao" class="br.gov.pbh.desif.dao.impl.IndiceMonetarioDaoImpl" scope="singleton" />
+    <bean name="feriadoDao" class="br.gov.pbh.desif.dao.impl.FeriadoDaoImpl" scope="singleton" />
+    <bean name="dwDao" class="br.gov.pbh.desif.dao.impl.WebServiceDaoImpl" scope="singleton" />
+    <bean name="pgccDao" class="br.gov.pbh.desif.dao.impl.PlanoGeralContaComentadoDaoImpl" scope="singleton" />
+    <bean name="tarServDao" class="br.gov.pbh.desif.dao.impl.TarifaServicoDaoImpl" scope="singleton" />
+    <bean name="identServRemVarDao" class="br.gov.pbh.desif.dao.impl.IdentServicosRemunVariavelDaoImpl" scope="singleton" />
+    <bean name="cosifDao" class="br.gov.pbh.desif.dao.impl.CosifDaoImpl" scope="singleton" />
+    <bean name="servRemVarDao" class="br.gov.pbh.desif.dao.impl.ServRemunVarDaoImpl" scope="singleton" />
+    <bean name="pgccsPFIdDao" class="br.gov.pbh.desif.dao.impl.PgccsPaiFilhoDaoImpl" scope="singleton" />
+    <bean name="cosifPFIdDao" class="br.gov.pbh.desif.dao.impl.CosifPaiFilhoDaoImpl" scope="singleton" />
+    <bean name="balancAnalitMensalDao" class="br.gov.pbh.desif.dao.impl.BalanceteAnaliticoMensalDaoImpl" scope="singleton" />
+    <bean name="rateioMensalDao" class="br.gov.pbh.desif.dao.impl.DemonstrativoRateioMensalDaoImpl" scope="singleton" />
+    <bean name="eventosContabeisDao" class="br.gov.pbh.desif.dao.impl.EventosContabeisDaoImpl" scope="singleton" />
+    <bean name="versaoDocumentacaoDao" class="br.gov.pbh.desif.dao.impl.VersaoDocumentacaoDaoImpl" scope="singleton" />
+    <bean name="newIdentDeclaracaoDao" class="br.gov.pbh.desif.dao.impl.NewIdentDeclaracaoDaoImpl" scope="singleton" />
+
+    <!--Frame principal na main para iniciar o aplicativo -->
+    <bean id="frmPrincipal" scope="singleton" class="br.gov.pbh.desif.view.telas.FrmPrincipal" />
+
+    <!--instancia a main -->
+    <bean id="main" scope="prototype" class="br.gov.pbh.desif.Main" />
+
+    <!-- instancia Classe que importa o arquivo de declaração -->
+    <bean id="importDesif" scope="singleton" class="br.gov.pbh.desif.service.arquivo.ImportDesIf" />
+
+    <!-- instancia Classe que limpa tabelas volateis no banco de dados -->
+    <bean id="limparBanco" scope="prototype" class="br.gov.pbh.desif.service.registrobanco.LimparBanco" />
+
+    <!-- instancia Classe de serviço de relatórios -->
+    <bean id="dadosRelatorio" scope="singleton" class="br.gov.pbh.desif.service.relatorios.DadosRelatorio" />
+
+    <!-- instancia Classe de serviço de relatórios do módulo contabil-->
+    <bean id="dadosRelatorioContab" scope="singleton" class="br.gov.pbh.desif.service.relatorios.DadosRelatorioContabil" />
+
+    <!-- instancia Classe de serviço de relatórios do módulo ICM-->
+    <bean id="dadosRelatorioICM" scope="singleton" class="br.gov.pbh.desif.service.relatorios.DadosRelatorioInfoComuns" />
+
+    <!-- instancia Classe de serviço para verificação da assinatura -->
+    <bean id="serVerAss" scope="prototype" class="br.gov.pbh.desif.service.certificacao.ServicoVerificarAssinatura" />
+
+    <!-- instancia Classe de serviço para assinatura da declaração -->
+    <bean id="serAss" scope="prototype" class="br.gov.pbh.desif.service.certificacao.ServicoAssinatura" />
+
+    <!-- instancia Classe de criptografia para guardar senha do proxy no arquivo -->
+    <bean id="cripto" scope="singleton" class="br.gov.pbh.bhiss.utilitarios.criptografia.CriptografiaRSA" />
+
+    <!--Painel Filtro de apuração issqn  -->
+    <bean id="panFiltApurIssqn" scope="singleton" class="br.gov.pbh.desif.view.telas.PanFiltroApuracaoIssqn" />
+
+    <!--Painel Filtro de Balancete Analitico  -->
+    <bean id="panFiltBalancAnalit" scope="singleton" class="br.gov.pbh.desif.view.telas.PanFiltroBalanceteAnalitico" />
+
+    <!--Painel Filtro de Balancete Analitico  -->
+    <bean id="panFiltDemRateio" scope="singleton" class="br.gov.pbh.desif.view.telas.PanFiltroDemonstrativoRateio" />
+
+    <!--Painel Filtro do relatório 1 do PGCC  -->
+    <bean id="panFiltPGCC" scope="singleton" class="br.gov.pbh.desif.view.telas.PanFiltroPGCC" />
+
+    <!--Painel Filtro do relatório 2 do PGCC  -->
+    <bean id="panFiltPGCC2" scope="singleton" class="br.gov.pbh.desif.view.telas.PanFiltroPGCC2" />
+
+    <!--Painel Filtro de Tarifa de Serviço da Instituição -->
+    <bean id="panFiltTarServInst" scope="singleton" class="br.gov.pbh.desif.view.telas.PanFiltroTarifasServicosInstituicao" />
+
+    <!--Painel Filtro de Serviço de Remuneração Variável -->
+    <bean id="panFiltServRemVar" scope="singleton" class="br.gov.pbh.desif.view.telas.PanFiltroServRemuVariavel" />
+
+    <!--Painel Filtro de apuração subtitulo  -->
+    <bean id="panFiltApurSubtitulo" scope="singleton" class="br.gov.pbh.desif.view.telas.PanFiltroApuracaoSubtitulo" />
+
+    <!--Painel Filtro de Guia  -->
+    <bean id="panFiltGuia" scope="prototype" class="br.gov.pbh.desif.view.telas.PanFiltroGuia" />
+
+    <!--Painel Importar  -->
+    <bean id="panGD" scope="singleton" class="br.gov.pbh.desif.view.telas.PanGerarDeclaracao">
+        <property name="controle" ref="controle"></property>
+    </bean>
+
+    <!--Painel Sucesso  -->
+    <bean id="panSucesso" scope="prototype" class="br.gov.pbh.desif.view.telas.PanSucesso" />
+
+    <!--Painel Erro  -->
+    <bean id="panErro" scope="prototype" class="br.gov.pbh.desif.view.telas.PanErro" />
+
+    <!--Class Util para exibir JOptionPanel  -->
+    <bean id="swingUtil" scope="singleton" class="br.gov.pbh.desif.view.util.SwingUtils" />
+
+     <!--Configurações de proxy  -->
+    <bean id="configuracao" scope="singleton" class="br.gov.pbh.desif.service.util.Configuracao" />
+
+    <!--Caixa de dialogo com um jFileChooser para que o usuario escolha o arquivo a ser importado -->
+    <bean id="dialArquivo" scope="singleton" class="br.gov.pbh.desif.view.telas.DialArquivo">
+        <constructor-arg>
+            <ref bean="frmPrincipal"/>
+        </constructor-arg>
+       <constructor-arg type="boolean" value="true"/>
+   </bean>
+
+    <bean id="dialDiretorio" scope="singleton" class="br.gov.pbh.desif.view.telas.DialDiretorio">
+        <constructor-arg>
+            <ref bean="frmPrincipal"/>
+        </constructor-arg>
+        <constructor-arg type="boolean" value="true"/>
+    </bean>
+
+    <bean id="dialConfiguracao" scope="singleton" class="br.gov.pbh.desif.view.telas.DialConfiguracao">
+        <constructor-arg>
+            <ref bean="frmPrincipal"/>
+        </constructor-arg>
+        <constructor-arg type="boolean" value="true"/>
+        <!--<property name="appender" ref="log4j"/>-->
+    </bean>
+
+    <bean id="log4j" scope="singleton" class="org.apache.log4j.DailyRollingFileAppender">
+        <constructor-arg>
+            <ref bean="layoutLog4j"/>
+        </constructor-arg>
+        <constructor-arg type="boolean" value="c:\usr"/>
+        <constructor-arg type="boolean" value=".yyyy-MM-dd"/>
+     </bean>
+
+     <bean id="layoutLog4j" scope="singleton" class="org.apache.log4j.PatternLayout"/>
+
+    <!--Caixa de dialogo exibindo os erros que aconteceram no processo -->
+    <bean id="dialErroImp" scope="prototype" class="br.gov.pbh.desif.view.telas.DialErroImp" >
+        <constructor-arg>
+            <ref bean="frmPrincipal"/>
+        </constructor-arg>
+        <constructor-arg type="boolean" value="true"/>
+    </bean>
+
+        <!--Caixa de dialogo exibindo os alertas que aconteceram no processo -->
+    <bean id="dialAlerta" scope="prototype" class="br.gov.pbh.desif.view.telas.DialAlerta" >
+    <constructor-arg>
+            <ref bean="frmPrincipal"/>
+        </constructor-arg>
+        <constructor-arg type="boolean" value="true"/>
+    </bean>
+
+</beans>

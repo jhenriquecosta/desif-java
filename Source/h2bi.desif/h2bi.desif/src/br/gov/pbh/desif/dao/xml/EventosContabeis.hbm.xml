@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- 
+    Mapping file coded by Igor Vieira - igvieira at pbh.gov.br
+-->
+<hibernate-mapping>
+  <class name="br.gov.pbh.desif.model.pojo.EventosContabeis" schema="PUBLIC" table="EVENTOS_CONTABEIS">
+    <id name="id" type="int">
+      <column name="IDN_EVNT_CNTB"/>
+      <generator class="assigned"/>
+    </id>
+    <property name="descricaoEvento" type="string">
+      <column name="DES_EVNT_CNTB" not-null="true"/>
+    </property>
+  </class>
+</hibernate-mapping>

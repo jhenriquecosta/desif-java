@@ -1,0 +1,32 @@
+<!-- Generated Feb 26, 2009 11:33:38 AM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping>
+<class name="br.gov.pbh.bhiss.dom.guia.GuiasNfsesProprios" table="guias_nfses_proprios" schema="guia">
+<composite-id name="id" class="br.gov.pbh.bhiss.dom.guia.GuiasNfsesPropriosId">
+<key-property name="codAnoNume" type="long">
+<column name="cod_ano_nume" />
+</key-property>
+<key-property name="codCnpj" type="long">
+<column name="cod_cnpj" />
+</key-property>
+<key-property name="codInscMuni" type="java.lang.String">
+<column name="cod_insc_muni" />
+</key-property>
+<key-property name="codAnoNumeIspr" type="long">
+<column name="cod_ano_nume_ispr" />
+</key-property>
+</composite-id>
+<many-to-one name="guiasIssProprios" class="br.gov.pbh.bhiss.dom.guia.GuiasIssProprios" update="false" insert="false" >
+<column name="cod_ano_nume_ispr" not-null="true" />
+<column name="cod_cnpj" not-null="true" />
+<column name="cod_insc_muni" not-null="true" />
+</many-to-one>
+<many-to-one name="nfses" class="br.gov.pbh.bhiss.dom.guia.Nfses" insert="false" update="false" cascade="all">
+<column name="cod_ano_nume" not-null="true" />
+<column name="cod_cnpj" not-null="true" />
+<column name="cod_insc_muni" not-null="true" />
+</many-to-one>
+<property name="valUsad" type="big_decimal">
+<column name="val_usad" precision="15" not-null="true" />
+</property>
+</class>
+</hibernate-mapping>
